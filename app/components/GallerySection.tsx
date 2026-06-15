@@ -1,16 +1,9 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Camera, Sparkles, Star } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 const STICKERS = ["💍", "✨", "🥂", "💌", "🌹", "🎉", "💫", "🫶", "🌸", "💕"];
-
-const stickerPositions = [
-  { top: "-14px", right: "-10px", rotate: "15deg", fontSize: "28px" },
-  { bottom: "-12px", left: "-8px", rotate: "-12deg", fontSize: "24px" },
-  { top: "-10px", left: "12px", rotate: "-8deg", fontSize: "20px" },
-  { bottom: "-10px", right: "14px", rotate: "20deg", fontSize: "22px" },
-];
 
 export default function GallerySection() {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -22,11 +15,11 @@ export default function GallerySection() {
     { type: "image", url: "/11.jpeg", title: "The Promise", tag: "2025", gridClass: "md:col-span-4 h-[380px]", sticker: "🌹", vibe: "Pinky promise, forever 🤙" },
     { type: "image", url: "/2222.jpeg", title: "Love", tag: "2025", gridClass: "md:col-span-4 h-[380px]", sticker: "💕", vibe: "This is the one 😍" },
     { type: "image", url: "/33.jpeg", title: "Laughter", tag: "2026", gridClass: "md:col-span-4 h-[380px]", sticker: "🎉", vibe: "Giggling forever 😂" },
-    { type: "video", url: "/spin.mp4", title: "Hand in Hand", tag: "Chapters of Us", gridClass: "md:col-span-4 h-[380px]", sticker: "💫", vibe: "Round and round we go 💫💍" },
+    { type: "video", url: "/spin.mp4", title: "Hand in Hand", tag: "Chapters of Us", gridClass: "md:col-span-4 h-[380px]", sticker: "💫", vibe: "Dizzy in love ✨" },
     { type: "image", url: "/proposal.jpeg", title: "Proposal", tag: "16/1/2026", gridClass: "md:col-span-8 h-[380px]", sticker: "💍", vibe: "The big moment!! 🫣" },
     { type: "image", url: "/66.jpeg", title: "Will you marry me?", tag: "16/1/2026", gridClass: "md:col-span-8 h-[380px]", sticker: "🥂", vibe: "The question of a lifetime ✨" },
     { type: "image", url: "/55.jpeg", title: "Yes, a million times yes!", tag: "16/1/2026", gridClass: "md:col-span-4 h-[380px]", sticker: "🎉", vibe: "SHE SAID YES!!!! 🎊" },
-    { type: "video", url: "/engagement2.mp4", title: "First Spin as Fiancés", tag: "24/1/2026", gridClass: "md:col-span-4 h-[450px]", sticker: "✨", vibe: "Spin, spin, spin 💃🕺" },
+    { type: "video", url: "/engagement2.mp4", title: "First Spin as Fiancés", tag: "24/1/2026", gridClass: "md:col-span-4 h-[450px]", sticker: "✨", vibe: "Round and round we go 💫💍" },
     { type: "image", url: "/MKP-8.jpg", title: "The Journey Begins", tag: "2026", gridClass: "md:col-span-8 h-[450px]", sticker: "🌟", vibe: "To be continued... 👀💕" },
   ];
 
@@ -66,7 +59,6 @@ export default function GallerySection() {
 
         {/* Section Heading */}
         <motion.div {...fadeIn} className="text-center mb-24 relative">
-          {/* Fun pill badge */}
           <motion.div
             className="inline-flex items-center gap-2 bg-rose-50 border border-rose-200 rounded-full px-4 py-1.5 mb-5 shadow-sm"
             whileHover={{ scale: 1.05 }}
@@ -87,7 +79,6 @@ export default function GallerySection() {
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#D4AF37]/60" />
           </div>
 
-          {/* Confetti-style scattered stickers near title */}
           {["🌸", "✨", "💕"].map((s, i) => (
             <motion.span
               key={i}
@@ -112,10 +103,11 @@ export default function GallerySection() {
               viewport={{ once: true, margin: "-50px" }}
               onHoverStart={() => setHovered(index)}
               onHoverEnd={() => setHovered(null)}
-              className={`${item.gridClass} relative group bg-stone-100 border-[3px] border-[#D4AF37]/60 p-1 rounded-xl shadow-[0_15px_45px_rgba(0,0,0,0.03)] transition-all duration-700 ease-out hover:border-[#D4AF37] hover:shadow-[0_25px_60px_rgba(212,175,55,0.22)] hover:-translate-y-1`}
+              onClick={() => setHovered(hovered === index ? null : index)}
+              className={`${item.gridClass} relative group bg-stone-100 border-[3px] border-[#D4AF37]/60 p-1 rounded-xl shadow-[0_15px_45px_rgba(0,0,0,0.03)] transition-all duration-700 ease-out hover:border-[#D4AF37] hover:shadow-[0_25px_60px_rgba(212,175,55,0.22)] hover:-translate-y-1 cursor-pointer`}
             >
 
-              {/* Sticker bubble on card — top right */}
+              {/* Sticker bubble — top right */}
               <motion.div
                 className="absolute -top-4 -right-3 z-30 text-2xl drop-shadow-md select-none pointer-events-none"
                 animate={hovered === index
@@ -127,7 +119,7 @@ export default function GallerySection() {
                 {item.sticker}
               </motion.div>
 
-              {/* Secondary random sticker bottom-left on hover */}
+              {/* Secondary sticker — bottom left on hover/tap */}
               <motion.div
                 className="absolute -bottom-3 -left-3 z-30 text-xl drop-shadow select-none pointer-events-none"
                 initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
@@ -169,7 +161,7 @@ export default function GallerySection() {
                 {/* Dark vignette */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent opacity-85 group-hover:opacity-75 transition-opacity duration-500 z-10" />
 
-                {/* Fun "vibe" caption — slides up on hover */}
+                {/* Vibe caption — hover on desktop, tap on mobile */}
                 <motion.div
                   className="absolute top-4 left-0 right-0 flex justify-center z-20 pointer-events-none"
                   initial={{ opacity: 0, y: -8 }}
@@ -192,7 +184,7 @@ export default function GallerySection() {
                 </h4>
               </div>
 
-              {/* Camera icon badge for photos */}
+              {/* Camera icon for photos */}
               {item.type === "image" && (
                 <div className="absolute top-5 right-5 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5">
@@ -200,11 +192,20 @@ export default function GallerySection() {
                   </div>
                 </div>
               )}
+
+              {/* Mobile tap hint — only shows when not active */}
+              {hovered !== index && (
+                <div className="absolute top-4 left-0 right-0 flex justify-center z-20 pointer-events-none md:hidden">
+                  <span className="bg-black/30 backdrop-blur-sm text-white text-[10px] rounded-full px-2.5 py-0.5 tracking-wide">
+                    tap for more ✨
+                  </span>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
 
-        {/* Fun footer note */}
+        {/* Fun footer */}
         <motion.div
           {...fadeIn}
           className="text-center mt-20 flex flex-col items-center gap-3"

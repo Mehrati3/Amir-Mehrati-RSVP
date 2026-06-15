@@ -56,7 +56,7 @@ export default function RsvpSection({ submitted, guestCount, loading, setGuestCo
                     <label className="flex-1 cursor-pointer">
                       <input type="radio" name="side" value="Bride" required className="hidden peer" defaultChecked />
                       <div className="text-center py-2.5 border border-white/10 rounded-xl peer-checked:border-[#D4AF37] peer-checked:bg-[#D4AF37]/10 transition-all duration-300 hover:bg-white/5">
-                        <span className="text-xs uppercase tracking-widest text-white/50 peer-checked:text-[#D4AF37] font-medium">Mehrati</span>
+                        <span className="text-xs uppercase tracking-widest text-white/50 peer-checked:text-[#D4AF37] font-medium">Méhrati</span>
                       </div>
                     </label>
                   </div>

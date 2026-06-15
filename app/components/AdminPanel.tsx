@@ -64,10 +64,10 @@ export default function AdminPanel({
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-12 border-b border-stone-200 pb-8">
           <div>
             <h2 className="text-4xl font-light tracking-wide font-serif text-slate-800">Guest List</h2>
-            <p className="text-[#D4AF37] mt-2 uppercase tracking-widest text-[10px] font-semibold">Amir & Mehrati's Wedding Dashboard</p>
+            <p className="text-[#D4AF37] mt-2 uppercase tracking-widest text-[10px] font-semibold">Amir & Méhrati's Wedding Dashboard</p>
           </div>
           <div className="bg-white px-6 py-4 rounded-xl border border-stone-200/60 text-center shadow-sm min-w-[160px]">
-            <p className="text-3xl font-light text-[#1A3A3A]">{guests.reduce((acc, g) => acc + (g.total_guests || 1), 0)}</p>
+            <p className="text-3xl font-light text-[#1A3A3A.]">{guests.reduce((acc, g) => acc + (g.total_guests || 1), 0)}</p>
             <p className="text-[9px] uppercase tracking-widest opacity-60 font-sans font-semibold mt-1">Confirmed Guests</p>
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function AdminPanel({
           <div key={currentSide} className="mb-20">
             <h3 className="text-xs mb-6 flex items-center gap-3 uppercase tracking-[0.25em] text-[#1A3A3A] font-semibold font-sans">
               <div className="h-0.5 w-6 bg-[#D4AF37]" />
-              {currentSide === 'Groom' ? "Amir's Side" : "Mehrati's Side"}
+              {currentSide === 'Groom' ? "Amir's Side" : "éhrati's Side"}
               <span className="text-[11px] text-slate-400 font-normal font-serif italic ml-auto">
                 ({guests.filter(g => g.side === currentSide).reduce((acc, g) => acc + (g.total_guests || 1), 0)} guests)
               </span>
@@ -116,7 +116,23 @@ export default function AdminPanel({
                           </td>
                           <td className="p-4 text-right">
                             <div className="flex justify-end gap-2">
-                              <button onClick={() => handleUpdateGuest(guest.id)} className="px-3.5 py-1.5 bg-emerald-600 text-white text-[10px] uppercase rounded-lg font-bold">Save</button>
+                              <button 
+                                onClick={() => {
+                                  // 1 (Main Guest) + length of filled out additional guest input values
+                                  const validPlusOnes = editFormData.additional_guests?.filter((n: string) => n && n.trim().length > 0) || [];
+                                  const expectedCount = 1 + validPlusOnes.length;
+
+                                  if (editFormData.total_guests !== expectedCount) {
+                                    setEditError(`The guest count (${editFormData.total_guests}) does not match the number of names listed (${expectedCount}).`);
+                                  } else {
+                                    setEditError(null);
+                                    handleUpdateGuest(guest.id);
+                                  }
+                                }} 
+                                className="px-3.5 py-1.5 bg-emerald-600 text-white text-[10px] uppercase rounded-lg font-bold"
+                              >
+                                Save
+                              </button>
                               <button onClick={() => { setEditingId(null); setEditError(null); }} className="px-3.5 py-1.5 bg-stone-200 text-stone-700 text-[10px] uppercase rounded-lg font-bold">Cancel</button>
                             </div>
                           </td>
