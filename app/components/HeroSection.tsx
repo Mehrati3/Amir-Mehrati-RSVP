@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface HeroSectionProps {
@@ -9,9 +9,6 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
-  // Common spring transition for a bouncy, comic-like feel
-  const popSpring = { type: "spring", stiffness: 100, damping: 12 };
-
   return (
     <section className="relative h-screen flex flex-col items-center justify-center text-center p-4">
       <div 
@@ -31,13 +28,13 @@ export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
         onClick={() => confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#D4AF37', '#FFFFFF', '#FCE7F3'] })}
       >
         
-        {/* ================= LEFT SIDE TOAST: AMIR'S ACCIDENT ================= */}
+        {/* ================= LEFT SIDE TOAST: AMIR'S ACCIDENT (FIXED FOR MOBILE) ================= */}
         <AnimatePresence>
           {curtainsOpen && (
             <motion.div 
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.4, delay: 2.5 } }}
-              className="absolute top-6 left-6 z-30 pointer-events-none hidden sm:flex items-center justify-center h-16 w-24"
+              className="absolute top-4 left-4 sm:top-6 sm:left-6 z-30 pointer-events-none flex items-center justify-center h-16 w-24 transform scale-75 sm:scale-100 origin-top-left"
             >
               {/* Left Glass */}
               <motion.div
@@ -82,19 +79,19 @@ export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
           )}
         </AnimatePresence>
 
-        {/* ================= RIGHT SIDE TOAST: MEHRATI'S SURPRISE ================= */}
+        {/* ================= RIGHT SIDE TOAST: MEHRATI'S SURPRISE (FIXED FOR MOBILE) ================= */}
         <AnimatePresence>
           {curtainsOpen && (
             <motion.div 
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.4, delay: 2.5 } }}
-              className="absolute top-6 right-6 z-30 pointer-events-none hidden sm:flex items-center justify-center h-16 w-24"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 pointer-events-none flex items-center justify-center h-16 w-24 transform scale-75 sm:scale-100 origin-top-right"
             >
               {/* Left Glass */}
               <motion.div
                 initial={{ rotate: -45, x: -50, opacity: 0 }}
                 animate={{ rotate: [ -45, 25, 12, 12 ], x: [ -50, 12, 0, 0 ], opacity: [0, 1, 1, 0] }}
-                transition={{ duration: 2.6, times: [0, 0.3, 0.5, 0.95], ease: "easeOut", delay: 0.7 }} // Slightly staggered delay
+                transition={{ duration: 2.6, times: [0, 0.3, 0.5, 0.95], ease: "easeOut", delay: 0.7 }}
                 className="origin-bottom-right"
               >
                 <svg width="26" height="42" viewBox="0 0 32 48" fill="none" className="text-[#D4AF37]">
@@ -110,7 +107,7 @@ export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: [0, 1.3, 1, 0], opacity: [0, 1, 1, 0] }}
                 transition={{ duration: 1.8, times: [0, 0.2, 0.8, 1], delay: 1.4 }}
-                className="absolute -top-4 font-sans font-black bg-[#1A3A3A] text-white px-1.5 py-0.5 rounded text-[9px] tracking-tighter border border-[#D4AF37] shadow-sm whitespace-nowrap"
+                className="absolute -top-4 font-sans font-black bg-[#1A3A3A.] text-black px-1.5 py-0.5 rounded text-[9px] tracking-tighter border border-[#D4AF37] shadow-sm whitespace-nowrap"
               >
                 CHEERS! 🎉
               </motion.div>
@@ -147,12 +144,12 @@ export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
           </div>
         </motion.div>
         
-        <h2 className="uppercase tracking-[0.55em] text-[#1A3A3A] text-xs font-semibold mb-6 opacity-90">
+        <h2 className="uppercase tracking-[0.55em] text-[#1A3A3A.] text-xs font-semibold mb-6 opacity-90">
           Together with their families
         </h2>
         
-        <h1 className="text-5xl md:text-8xl font-extralight text-[#1A3A3A] mb-8 tracking-tight font-serif">
-          Amir <span className="text-[#D4AF37] font-normal italic">&</span> Méhrati
+        <h1 className="text-5xl md:text-8xl font-extralight text-[#1A3A3A.] mb-8 tracking-tight font-serif">
+          Amir <span className="text-[#D4AF37] font-normal italic">&</span> Mehrati
         </h1>
         
         <div className="flex items-center justify-center gap-4 mb-8">
@@ -161,7 +158,7 @@ export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
           <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#D4AF37]" />
         </div>
         
-        <p className="text-base md:text-xl text-[#1A3A3A] font-light tracking-[0.25em] uppercase">
+        <p className="text-base md:text-xl text-[#1A3A3A.] font-light tracking-[0.25em] uppercase">
           May 08, 2027 <span className="text-[#D4AF37] mx-2">•</span> Egypt
         </p>
       </motion.div>

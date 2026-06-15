@@ -195,10 +195,7 @@ export default function GallerySection() {
 
               {/* Mobile tap hint — only shows when not active */}
               {hovered !== index && (
-                <div className="absolute top-4 left-0 right-0 flex justify-center z-20 pointer-events-none md:hidden">
-                  <span className="bg-black/30 backdrop-blur-sm text-white text-[10px] rounded-full px-2.5 py-0.5 tracking-wide">
-                    tap for more ✨
-                  </span>
+                <div>
                 </div>
               )}
             </motion.div>
