@@ -149,7 +149,7 @@ export default function HeroSection({ curtainsOpen }: HeroSectionProps) {
         </h2>
         
         <h1 className="text-5xl md:text-8xl font-extralight text-[#1A3A3A.] mb-8 tracking-tight font-serif">
-          Amir <span className="text-[#D4AF37] font-normal italic">&</span> Mehrati
+          Amir <span className="text-[#D4AF37] font-normal italic">&</span> Méhrati
         </h1>
         
         <div className="flex items-center justify-center gap-4 mb-8">

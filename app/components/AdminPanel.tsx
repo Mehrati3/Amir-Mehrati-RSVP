@@ -76,7 +76,7 @@ export default function AdminPanel({
           <div key={currentSide} className="mb-20">
             <h3 className="text-xs mb-6 flex items-center gap-3 uppercase tracking-[0.25em] text-[#1A3A3A] font-semibold font-sans">
               <div className="h-0.5 w-6 bg-[#D4AF37]" />
-              {currentSide === 'Groom' ? "Amir's Side" : "éhrati's Side"}
+              {currentSide === 'Groom' ? "Amir's Side" : "Méhrati's Side"}
               <span className="text-[11px] text-slate-400 font-normal font-serif italic ml-auto">
                 ({guests.filter(g => g.side === currentSide).reduce((acc, g) => acc + (g.total_guests || 1), 0)} guests)
               </span>
