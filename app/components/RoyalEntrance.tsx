@@ -175,7 +175,7 @@ export default function RoyalEntrance({ view }: RoyalEntranceProps) {
                     INVITATION
                 ========================================================= */}
                 <motion.div
-                  className="absolute left-1/2 top-[16%] h-[32vh] max-h-[300px] w-auto -translate-x-1/2 aspect-[0.707]"
+                  className="absolute left-1/2 top-[40%] h-[52vh] w-auto -translate-x-1/2 aspect-[0.707]"
                   style={{
                     zIndex: 20,
                     transformStyle: "preserve-3d",
