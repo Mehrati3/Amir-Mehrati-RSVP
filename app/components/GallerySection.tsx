@@ -72,7 +72,7 @@ export default function GallerySection() {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
             <Sparkles size={12} className="text-[#D4AF37] mb-0.5 animate-pulse" />
-            <span className="text-[7px] lg:text-[8px] font-mono tracking-[0.18em] font-bold text-stone-700 uppercase">May 08</span>
+            <span className="text-[7px] lg:text-[8px] font-mono tracking-[0.18em] font-bold text-stone-700 uppercase">FEB 06</span>
             <span className="text-[8px] lg:text-[9px] font-serif italic text-stone-400">2027</span>
             <div className="absolute -inset-1.5 border border-[#D4AF37]/20 rounded-full animate-ping opacity-30 [animation-duration:3s]" />
           </motion.div>
