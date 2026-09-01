@@ -34,7 +34,7 @@ export default function RsvpSection({ submitted, guestCount, loading, setGuestCo
             <div className="text-center mb-16">
               <Heart className="mx-auto text-rose-300 fill-rose-300/10 mb-4 animate-pulse" size={32} strokeWidth={1.2} />
               <h2 className="text-4xl md:text-5xl font-extralight mb-4 tracking-wide font-serif">RSVP</h2>
-              <p className="text-[#D4AF37] tracking-[0.2em] uppercase text-[10px] font-semibold">Kindly respond by March 31, 2027</p>
+              <p className="text-[#D4AF37] tracking-[0.2em] uppercase text-[10px] font-semibold">Kindly respond by January 16, 2027</p>
             </div>
 
             <form className="space-y-10" onSubmit={onSubmit}>
