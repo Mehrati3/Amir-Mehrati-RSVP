@@ -121,38 +121,56 @@ export default function WeddingInvitation() {
       <RoyalEntrance view={view} />
 
       {/* Navigation */}
-      <div className="fixed right-6 top-6 z-[90] flex gap-2.5">
+      <div className="fixed right-5 top-5 z-[90] flex gap-2 sm:right-6 sm:top-6">
+        {/* Invitation */}
         <button
           onClick={() => setView("invite")}
-          className={`rounded-full px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.15em] transition-all ${
+          className={`group relative overflow-hidden rounded-full border px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 sm:px-6 ${
             view === "invite"
-              ? "bg-[#D4AF37] text-white shadow-md"
-              : "bg-white/90 text-slate-500"
+              ? "border-[#9A8EAA] bg-[#9A8EAA] text-white shadow-[0_8px_24px_rgba(154,142,170,0.28)]"
+              : "border-[#A99ABB]/40 bg-[#FCF8F1]/90 text-[#887A99] backdrop-blur-md hover:-translate-y-0.5 hover:border-[#9A8EAA]/70 hover:bg-[#F5F0F7]"
           }`}
         >
-          Invitation
+          {/* soft shine */}
+          {view === "invite" && (
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+          )}
+
+          <span className="relative flex items-center gap-2">
+            <span className="text-[12px]">♡</span>
+            Invitation
+          </span>
         </button>
 
+        {/* Guest List */}
         <button
           onClick={() => setView("admin")}
-          className={`rounded-full px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.15em] transition-all ${
+          className={`group relative overflow-hidden rounded-full border px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 sm:px-6 ${
             view === "admin"
-              ? "bg-[#1A3A3A] text-white shadow-md"
-              : "bg-white/90 text-slate-500"
+              ? "border-[#7A8065] bg-[#7A8065] text-white shadow-[0_8px_24px_rgba(122,128,101,0.28)]"
+              : "border-[#7A8065]/35 bg-[#FCF8F1]/90 text-[#7A8065] backdrop-blur-md hover:-translate-y-0.5 hover:border-[#7A8065]/60 hover:bg-[#F1F2EA]"
           }`}
         >
-          Guest List
+          {/* soft shine */}
+          {view === "admin" && (
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+          )}
+
+          <span className="relative flex items-center gap-2">
+            <span className="text-[11px]">✦</span>
+            Guest List
+          </span>
         </button>
       </div>
 
       {view === "invite" ? (
         <>
           {/* HeroSection is intentionally empty */}
-          <HeroSection curtainsOpen={true} />
+          {/*<HeroSection curtainsOpen={true} />*/}
 
           
 
-          <DetailsSection />
+          {/*<DetailsSection />*/}
 
           <RsvpSection
             submitted={submitted}
