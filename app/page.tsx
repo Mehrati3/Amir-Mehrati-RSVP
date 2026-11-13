@@ -26,7 +26,8 @@ export default function WeddingInvitation() {
   const [editFormData, setEditFormData] = useState<any>(null);
   const [editError, setEditError] = useState<string | null>(null);
 
-  const handleSubmit = async (
+  
+const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
@@ -34,33 +35,51 @@ export default function WeddingInvitation() {
 
     const formData = new FormData(e.currentTarget);
 
+    const attendanceStatus =
+      formData.get("attendanceStatus")?.toString() || "Attending";
+
+    const guestName = formData.get("guestName")?.toString().trim();
+
     const extraNames: string[] = [];
 
-    for (let i = 1; i < guestCount; i++) {
-      const name = formData.get(`extraName_${i}`);
+    if (attendanceStatus === "Attending") {
+      for (let i = 1; i < guestCount; i++) {
+        const name = formData.get(`extraName_${i}`)?.toString().trim();
 
-      if (name) {
-        extraNames.push(name.toString());
+        if (name) {
+          extraNames.push(name);
+        }
       }
     }
 
     const { error } = await supabase.from("rsvps").insert([
       {
-        name: formData.get("guestName"),
-        status: "Attending",
-        side: formData.get("side"),
-        total_guests: guestCount,
+        name: guestName,
+        status: attendanceStatus,
+        side:
+          attendanceStatus === "Attending"
+            ? formData.get("side")
+            : null,
+        total_guests:
+          attendanceStatus === "Attending" ? guestCount : 0,
         additional_guests: extraNames,
-        notes: formData.get("dietary"),
+        notes:
+          attendanceStatus === "Attending"
+            ? formData.get("dietary")
+            : null,
       },
     ]);
 
-    if (!error) {
+    if (error) {
+      console.error("RSVP submission error:", error);
+      alert("Something went wrong. Please try again.");
+    } else {
       setSubmitted(true);
     }
 
     setLoading(false);
   };
+
 
   const fetchGuests = async () => {
     const { data } = await supabase
@@ -170,7 +189,7 @@ export default function WeddingInvitation() {
 
           
 
-          {/*<DetailsSection />*/}
+          /<DetailsSection />
 
           <RsvpSection
             submitted={submitted}

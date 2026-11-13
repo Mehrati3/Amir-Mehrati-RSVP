@@ -78,26 +78,34 @@ export default function AdminPanel({
    */
 
   const stats = useMemo(() => {
-    const totalGuests = guests.reduce(
-      (sum, guest) => sum + Number(guest.total_guests || 1),
+    const attending = guests.filter(
+      (guest) => guest.status === "Attending"
+    );
+
+    const groom = attending.filter(
+      (guest) => guest.side === "Groom"
+    );
+
+    const bride = attending.filter(
+      (guest) => guest.side === "Bride"
+    );
+
+    const totalGuests = attending.reduce(
+      (sum, guest) => sum + Number(guest.total_guests ?? 1),
       0
     );
 
-    const groomGuests = guests
-      .filter((guest) => guest.side === "Groom")
-      .reduce(
-        (sum, guest) => sum + Number(guest.total_guests || 1),
-        0
-      );
+    const groomGuests = groom.reduce(
+      (sum, guest) => sum + Number(guest.total_guests ?? 1),
+      0
+    );
 
-    const brideGuests = guests
-      .filter((guest) => guest.side === "Bride")
-      .reduce(
-        (sum, guest) => sum + Number(guest.total_guests || 1),
-        0
-      );
+    const brideGuests = bride.reduce(
+      (sum, guest) => sum + Number(guest.total_guests ?? 1),
+      0
+    );
 
-    const plusOnes = Math.max(totalGuests - guests.length, 0);
+    const plusOnes = Math.max(totalGuests - attending.length, 0);
 
     return {
       totalGuests,
@@ -107,11 +115,19 @@ export default function AdminPanel({
     };
   }, [guests]);
 
-  const groomRsvps = guests.filter(
+  const attendingGuests = guests.filter(
+    (guest) => guest.status === "Attending"
+  );
+
+  const declinedGuests = guests.filter(
+    (guest) => guest.status === "Not Attending"
+  );
+
+  const groomRsvps = attendingGuests.filter(
     (guest) => guest.side === "Groom"
   );
 
-  const brideRsvps = guests.filter(
+  const brideRsvps = attendingGuests.filter(
     (guest) => guest.side === "Bride"
   );
 
@@ -596,7 +612,7 @@ export default function AdminPanel({
             Summary Cards
         ====================================================== */}
 
-        <section className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard
             icon={<Users size={20} strokeWidth={1.7} />}
             label="Total Guests"
@@ -638,7 +654,21 @@ export default function AdminPanel({
             accent={olive}
             delay={0.24}
           />
+          <StatCard
+            icon={<Heart size={20} strokeWidth={1.7} />}
+            label="Unable to Attend"
+            value={declinedGuests.length}
+            description="Declined RSVPs"
+            accent={lavender}
+            delay={0.32}
+          />
         </section>
+
+        {/* ======================================================
+            Declined Guests
+        ====================================================== */}
+
+        
 
         {/* ======================================================
             Guest Lists
@@ -682,6 +712,9 @@ export default function AdminPanel({
             onAdditionalGuestChange={updateAdditionalGuest}
             setEditFormData={setEditFormData}
           />
+        </div>
+        <div className="mt-8">
+        <DeclinedGuestsSection guests={declinedGuests} />
         </div>
 
         {/* Footer */}
@@ -832,10 +865,12 @@ function GuestSideSection({
   ) => void;
   setEditFormData: (data: any) => void;
 }) {
-  const totalGuests = guests.reduce(
-    (sum, guest) => sum + Number(guest.total_guests || 1),
-    0
-  );
+  const totalGuests = guests
+    .filter((guest) => guest.status === "Attending")
+    .reduce(
+      (sum, guest) => sum + Number(guest.total_guests || 1),
+      0
+    );
 
   return (
     <motion.section
@@ -848,7 +883,7 @@ function GuestSideSection({
     >
       {/* Section header */}
       <div
-        className="relative overflow-hidden border-b px-5 py-5 sm:px-7"
+        className="relative overflow-hidden px-5 py-5 sm:px-7"
         style={{
           backgroundColor: lightColor,
           borderColor: "#DED7DE",
@@ -1845,5 +1880,136 @@ function EmptyGuests({
         “yes” ✦
       </p>
     </div>
+  );
+}
+
+
+
+
+function DeclinedGuestsSection({
+  guests,
+}: {
+  guests: any[];
+}) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.6 }}
+      className="overflow-hidden rounded-[2rem] border bg-white/60 shadow-[0_20px_60px_rgba(64,60,58,0.08)]"
+      style={{ borderColor: "#DED7DE" }}
+    >
+      {/* Section header */}
+      <div
+        className="relative overflow-hidden px-5 py-5 sm:px-7"
+        style={{
+          backgroundColor: lavenderSoft,
+        }}
+      >
+        {/* Decorative circle */}
+        <div
+          className="absolute -right-10 -top-14 h-36 w-36 rounded-full opacity-50"
+          style={{ backgroundColor: lavender }}
+        />
+
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Title and Heart */}
+          <div className="flex items-center gap-4">
+            <div
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-white/60"
+              style={{
+                borderColor: `${lavender}55`,
+                color: lavender,
+              }}
+            >
+              <Heart size={20} fill="currentColor" />
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2">
+                <h2
+                  className="font-serif text-2xl sm:text-3xl"
+                  style={{ color: charcoal }}
+                >
+                  Regretfully Declined
+                </h2>
+
+                <span style={{ color: lavender }}>♡</span>
+              </div>
+
+              <p
+                className="mt-1 text-xs"
+                style={{ color: muted }}
+              >
+                Guests who won't be able to celebrate with us
+              </p>
+            </div>
+          </div>
+
+          {/* Total Count */}
+          <div className="flex items-center gap-3">
+            <div className="rounded-full border bg-white/70 px-4 py-2 text-center">
+              <span
+                className="font-serif text-lg"
+                style={{ color: lavender }}
+              >
+                {guests.length}
+              </span>
+
+              <span
+                className="ml-2 text-[9px] font-semibold uppercase tracking-[0.16em]"
+                style={{ color: muted }}
+              >
+                declined
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Guest content */}
+      <div className="p-3 sm:p-5">
+        {guests.length === 0 ? (
+          <p
+            className="py-6 text-center text-sm italic"
+            style={{ color: muted }}
+          >
+            No declined RSVPs yet ♡
+          </p>
+        ) : (
+          <div
+            className="overflow-hidden rounded-2xl border bg-white/70"
+            style={{ borderColor: "#E2DCE1" }}
+          >
+            <div className="divide-y divide-[#ECE7EB]">
+              {guests.map((guest, index) => (
+                <div
+                  key={guest.id}
+                  className="flex items-center gap-4 px-5 py-4 transition hover:bg-[#FAF7F9]"
+                >
+                  <span
+                    className="inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+                    style={{
+                      backgroundColor: `${lavender}18`,
+                      color: lavender,
+                    }}
+                  >
+                    {index + 1}
+                  </span>
+
+                  <p
+                    className="font-serif text-base"
+                    style={{ color: charcoal }}
+                  >
+                    {guest.name || "Unnamed guest"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.section>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -50,6 +50,9 @@ export default function RsvpSection({
    * Explicitly type the animation object so TypeScript doesn't
    * infer ease values such as "easeOut" as a generic string.
    */
+  const [attendance, setAttendance] = useState<
+    "Attending" | "Not Attending" | null
+  >(null);
   const fadeIn = {
     initial: {
       opacity: 0,
@@ -389,23 +392,102 @@ export default function RsvpSection({
                   </p>
                 </div>
 
+                <div className="mb-10 space-y-5 text-center">
+                  <p
+                    className="font-serif text-xl"
+                    style={{ color: COLORS.text }}
+                  >
+                    Will you be joining us?
+                  </p>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => setAttendance("Attending")}
+                      className="border-2 px-5 py-6 transition-all duration-300 hover:-translate-y-1"
+                      style={{
+                        borderColor:
+                          attendance === "Attending"
+                            ? COLORS.olive
+                            : `${COLORS.olive}45`,
+                        backgroundColor:
+                          attendance === "Attending"
+                            ? COLORS.oliveLight
+                            : "transparent",
+                        boxShadow:
+                          attendance === "Attending"
+                            ? "0 8px 24px rgba(122,128,101,0.15)"
+                            : "none",
+                      }}
+                    >
+                      <Heart
+                        className="mx-auto mb-3"
+                        size={25}
+                        color={COLORS.olive}
+                        strokeWidth={1.2}
+                      />
+                      <span className="block font-serif text-lg" style={{ color: COLORS.text }}>
+                        Joyfully accepts
+                      </span>
+                      <span className="mt-2 block text-[9px] uppercase tracking-widest" style={{ color: COLORS.olive }}>
+                        We wouldn't miss it!
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setAttendance("Not Attending")}
+                      className="border-2 px-5 py-6 transition-all duration-300 hover:-translate-y-1"
+                      style={{
+                        borderColor:
+                          attendance === "Not Attending"
+                            ? COLORS.lavender
+                            : `${COLORS.lavender}45`,
+                        backgroundColor:
+                          attendance === "Not Attending"
+                            ? COLORS.lavenderPale
+                            : "transparent",
+                        boxShadow:
+                          attendance === "Not Attending"
+                            ? "0 8px 24px rgba(154,142,170,0.15)"
+                            : "none",
+                      }}
+                    >
+                      <Heart
+                        className="mx-auto mb-3"
+                        size={25}
+                        color={COLORS.lavender}
+                        strokeWidth={1.2}
+                      />
+                      <span className="block font-serif text-lg" style={{ color: COLORS.text }}>
+                        Regretfully declines
+                      </span>
+                      <span className="mt-2 block text-[9px] uppercase tracking-widest" style={{ color: COLORS.lavenderDark }}>
+                        Sending love from afar
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+
                 {/* ===========================================
                     FORM
                 ============================================ */}
 
-                <form
-                  onSubmit={onSubmit}
-                  className="space-y-9"
-                >
+                {attendance === "Attending" && (
+                  <form
+                    onSubmit={onSubmit}
+                    className="space-y-9"
+                  >
                   {/* Hidden guest count field.
                       Keeps compatibility with parent code that
                       reads formData.get("status"). */}
+ 
                   <input
                     type="hidden"
-                    name="status"
-                    value={guestCount}
+                    name="attendanceStatus"
+                    value="Attending"
                   />
-
                   {/* =========================================
                       NAME
                   ========================================== */}
@@ -720,10 +802,84 @@ export default function RsvpSection({
                       ✦
                     </span>
                   </div>
-                </form>
+                  </form>
+               )}
+
+              {attendance === "Not Attending" && (
+                <motion.form
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  onSubmit={onSubmit}
+                  className="space-y-7"
+                >
+                  <input
+                    type="hidden"
+                    name="attendanceStatus"
+                    value="Not Attending"
+                  />
+
+                  <div className="py-5 text-center">
+                    <Heart
+                      size={38}
+                      className="mx-auto mb-5"
+                      color={COLORS.lavender}
+                      strokeWidth={1}
+                    />
+
+                    <h3
+                      className="font-serif text-3xl italic"
+                      style={{ color: COLORS.text }}
+                    >
+                      You'll be missed!
+                    </h3>
+
+                    <p
+                      className="mx-auto mt-4 max-w-sm text-sm leading-7"
+                      style={{ color: COLORS.muted }}
+                    >
+                      We're sorry you won't be able to celebrate
+                      with us, but you'll be in our hearts.
+                      Sending you lots of love!
+                    </p>
+                  </div>
+
+                  <ElegantField
+                    label="Your Name"
+                    hint="So we know who is sending their love"
+                  >
+                    <input
+                      name="guestName"
+                      required
+                      type="text"
+                      placeholder="Your full name"
+                      className="rsvp-input"
+                    />
+                  </ElegantField>
+
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-white disabled:opacity-50"
+                    style={{ backgroundColor: COLORS.lavender }}
+                  >
+                    {loading ? "Sending..." : "Send with love ♡"}
+                  </motion.button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAttendance(null)}
+                    className="w-full text-[9px] uppercase tracking-widest"
+                    style={{ color: COLORS.muted }}
+                  >
+                    Go back
+                  </button>
+                </motion.form>
+              )}
+
               </>
             ) : (
-              <SuccessState />
+              <SuccessState attendance={attendance} />
             )}
           </div>
 
@@ -909,6 +1065,7 @@ function ElegantField({
    SIDE CARD
 ================================================================ */
 
+
 function SideCard({
   value,
   name,
@@ -938,50 +1095,52 @@ function SideCard({
       />
 
       <div
-        className="relative overflow-hidden border px-5 py-4 transition-all duration-300 hover:-translate-y-1 peer-checked:-translate-y-1"
+        className="relative overflow-hidden border-[2px] px-5 py-5 transition-all duration-300
+          peer-checked:border-[3px]
+          peer-checked:-translate-y-1
+          peer-checked:shadow-lg
+          peer-focus-visible:ring-2
+          peer-focus-visible:ring-offset-2"
         style={{
-          borderColor: `${color}40`,
-          backgroundColor: `${color}09`,
+          borderColor: `${color}55`,
+          backgroundColor: `${color}0A`,
           boxShadow: "none",
         }}
       >
-        {/* Selected indicator */}
-
+        {/* Highlighted inner frame */}
         <div
-          className="absolute right-3 top-3 flex h-5 w-5 scale-0 items-center justify-center rounded-full text-white opacity-0 transition-all duration-300 peer-checked:scale-100 peer-checked:opacity-100"
-          style={{
-            backgroundColor: color,
-          }}
+          className="pointer-events-none absolute inset-[5px] border-2 border-transparent
+            transition-all duration-300
+            peer-checked:border-[var(--side-color)]"
+          style={{ "--side-color": color } as React.CSSProperties}
+        />
+
+        {/* Selected indicator */}
+        <div
+          className="absolute right-3 top-3 flex h-6 w-6 scale-0 items-center
+            justify-center rounded-full text-white opacity-0 transition-all duration-300
+            peer-checked:scale-100 peer-checked:opacity-100"
+          style={{ backgroundColor: color }}
         >
-          <Check size={11} strokeWidth={2.5} />
+          <Check size={13} strokeWidth={2.5} />
         </div>
 
         {/* Decorative icon */}
-
         <span
-          className="absolute bottom-1 right-3 text-3xl opacity-[0.07]"
-          style={{
-            color,
-          }}
+          className="absolute bottom-1 right-3 text-3xl opacity-[0.09]"
+          style={{ color }}
         >
           {icon}
         </span>
 
         <div className="relative">
-          <p
-            className="mb-1 font-serif text-xl"
-            style={{
-              color: COLORS.text,
-            }}
-          >
+          <p className="mb-1 font-serif text-xl" style={{ color: COLORS.text }}>
             {title}
           </p>
 
           <p
             className="text-[8px] font-semibold uppercase tracking-[0.2em]"
-            style={{
-              color,
-            }}
+            style={{ color }}
           >
             {subtitle}
           </p>
@@ -990,6 +1149,7 @@ function SideCard({
     </label>
   );
 }
+
 
 /* ================================================================
    GUEST COUNTER
@@ -1070,52 +1230,39 @@ function GuestCounter({
    SUCCESS STATE
 ================================================================ */
 
-function SuccessState() {
+
+function SuccessState({
+  attendance,
+}: {
+  attendance: "Attending" | "Not Attending" | null;
+}) {
+  const isAttending = attendance === "Attending";
+
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        scale: 0.94,
-        y: 20,
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        y: 0,
-      }}
+      initial={{ opacity: 0, scale: 0.94, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{
         duration: 0.8,
         ease: "easeOut" as const,
       }}
       className="flex min-h-[500px] flex-col items-center justify-center py-10 text-center"
     >
-      {/* Floating sparkles */}
-
       <motion.div
-        animate={{
-          y: [0, -8, 0],
-          rotate: [0, 8, 0],
-        }}
+        animate={{ y: [0, -8, 0], rotate: [0, 8, 0] }}
         transition={{
           duration: 3.5,
           repeat: Infinity,
           ease: "easeInOut" as const,
         }}
         className="mb-3 text-lg"
-        style={{
-          color: COLORS.lavender,
-        }}
+        style={{ color: COLORS.lavender }}
       >
         ✦
       </motion.div>
 
-      {/* Heart */}
-
       <motion.div
-        animate={{
-          scale: [1, 1.08, 1],
-          rotate: [0, -3, 3, 0],
-        }}
+        animate={{ scale: [1, 1.08, 1], rotate: [0, -3, 3, 0] }}
         transition={{
           duration: 2.8,
           repeat: Infinity,
@@ -1125,82 +1272,69 @@ function SuccessState() {
         style={{
           borderColor: `${COLORS.lavender}65`,
           backgroundColor: COLORS.lavenderPale,
-          boxShadow:
-            "0 15px 45px rgba(154,142,170,0.18)",
+          boxShadow: "0 15px 45px rgba(154,142,170,0.18)",
         }}
       >
-        <div
-          className="absolute inset-2 rounded-full border"
-          style={{
-            borderColor: `${COLORS.lavender}25`,
-          }}
-        />
-
         <Heart
           size={38}
           strokeWidth={0.9}
-          style={{
-            color: COLORS.lavender,
-          }}
+          style={{ color: COLORS.lavender }}
           fill="rgba(154,142,170,0.2)"
         />
       </motion.div>
 
       <p
         className="mb-3 text-[9px] font-semibold uppercase tracking-[0.38em]"
-        style={{
-          color: COLORS.olive,
-        }}
+        style={{ color: COLORS.olive }}
       >
-        Your RSVP has been received
+        {isAttending
+          ? "Your RSVP has been received"
+          : "Your response has been received"}
       </p>
 
       <h2
         className="font-serif text-5xl font-light italic tracking-[0.1em] sm:text-6xl"
-        style={{
-          color: COLORS.text,
-        }}
+        style={{ color: COLORS.text }}
       >
-        Shukran
+        Thank you
       </h2>
 
       <div className="my-6 flex items-center gap-3">
         <div
           className="h-px w-14"
-          style={{
-            backgroundColor: `${COLORS.lavender}65`,
-          }}
+          style={{ backgroundColor: `${COLORS.lavender}65` }}
         />
-
         <Sparkles
           size={15}
           strokeWidth={1}
-          style={{
-            color: COLORS.lavender,
-          }}
+          style={{ color: COLORS.lavender }}
         />
-
         <div
           className="h-px w-14"
-          style={{
-            backgroundColor: `${COLORS.lavender}65`,
-          }}
+          style={{ backgroundColor: `${COLORS.lavender}65` }}
         />
       </div>
 
       <p
         className="max-w-md text-sm font-light leading-7 tracking-wide"
-        style={{
-          color: COLORS.muted,
-        }}
+        style={{ color: COLORS.muted }}
       >
-        We are so happy to have you with us.
-        <br />
-        We cannot wait to celebrate this beautiful
-        day together.
+        {isAttending ? (
+          <>
+            We're so happy you'll be celebrating with us!
+            <br />
+            We can't wait to have you there and share this
+            beautiful day together.
+          </>
+        ) : (
+          <>
+            We're sorry you won't be able to make it.
+            <br />
+            You will be dearly missed, and we'll be
+            thinking of you on our special day.
+          </>
+        )}
       </p>
-
-      {/* Date-style decorative card */}
 
       <div
         className="mt-8 border px-7 py-4"
@@ -1211,65 +1345,29 @@ function SuccessState() {
       >
         <p
           className="text-[8px] font-semibold uppercase tracking-[0.3em]"
-          style={{
-            color: COLORS.olive,
-          }}
+          style={{ color: COLORS.olive }}
         >
-          See you on the big day
+          {isAttending ? "See you on the big day" : "Sending you love"}
         </p>
 
         <p
           className="mt-1 font-serif text-lg"
-          style={{
-            color: COLORS.text,
-          }}
+          style={{ color: COLORS.text }}
+        >
+          Amir & Méhrati
+        </p>
+        <p
+          className="mt-1 font-serif text-sm"
+          style={{ color: COLORS.muted }}
         >
           February 6, 2027
         </p>
       </div>
 
       <div className="mt-8 flex items-center gap-4">
-        <motion.span
-          animate={{
-            y: [0, -4, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut" as const,
-          }}
-          style={{
-            color: COLORS.lavender,
-          }}
-        >
-          ✦
-        </motion.span>
-
-        <span
-          className="text-lg"
-          style={{
-            color: COLORS.lavender,
-          }}
-        >
-          ♡
-        </span>
-
-        <motion.span
-          animate={{
-            y: [0, -4, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            delay: 0.5,
-            ease: "easeInOut" as const,
-          }}
-          style={{
-            color: COLORS.olive,
-          }}
-        >
-          ✦
-        </motion.span>
+        <span style={{ color: COLORS.lavender }}>✦</span>
+        <span className="text-lg" style={{ color: COLORS.lavender }}>♡</span>
+        <span style={{ color: COLORS.olive }}>✦</span>
       </div>
     </motion.div>
   );
