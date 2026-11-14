@@ -42,7 +42,8 @@ export default function TransitionMessage() {
   return (
     <section
       className="relative overflow-hidden px-4 pt-4 pb-12 sm:px-6 md:pt-8 md:pb-16 lg:px-8"
-      style={{ backgroundColor: COLORS.cream }}
+      style={{ background:
+          "linear-gradient(145deg, #F9F6F9 0%, #FDFBF7 50%, #F0F0E9 100%)" }}
     >
       <motion.div
         initial={{ opacity: 0, y: 35 }}

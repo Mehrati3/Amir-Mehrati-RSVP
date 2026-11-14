@@ -74,10 +74,7 @@ export default function RsvpSection({
 
   return (
     <section
-     className="relative min-h-screen overflow-hidden px-4 pt-20 pb-4 text-[#403B3A] sm:px-6 md:pt-28 md:pb-6 lg:px-8"
-      style={{
-        backgroundColor: COLORS.cream,
-      }}
+     className="relative min-h-screen overflow-hidden px-4 pt-20 pb-4 text-[#403B3A] sm:px-6 md:pt-28 md:pb-6 lg:px-8 bg-[#FDFBF7]"
     >
       {/* =====================================================
           PAPER TEXTURE
@@ -200,24 +197,6 @@ export default function RsvpSection({
         {...fadeIn}
         className="relative mx-auto max-w-3xl"
       >
-        {/* ===================================================
-            LAYERED SHADOW / CARD
-        ==================================================== */}
-
-        <div
-          className="absolute inset-x-3 bottom-[-10px] top-3 border opacity-50"
-          style={{
-            borderColor: COLORS.lavenderLight,
-            backgroundColor: COLORS.lavenderPale,
-          }}
-        />
-
-        <div
-          className="absolute inset-x-6 bottom-[-16px] top-6 opacity-40"
-          style={{
-            backgroundColor: COLORS.olivePale,
-          }}
-        />
 
         {/* ===================================================
             MAIN CARD
@@ -258,39 +237,6 @@ export default function RsvpSection({
             size="small"
           />
 
-          {/* =================================================
-              TOP DECORATIVE STRIP
-          ================================================== */}
-
-          <div className="px-5 pt-8 sm:px-8 sm:pt-10">
-            <div
-              className="flex items-center justify-center gap-4 border-y py-3"
-              style={{
-                borderColor: `${COLORS.lavenderLight}45`,
-              }}
-            >
-              <span
-                className="text-[9px] tracking-[0.3em]"
-                style={{ color: COLORS.olive }}
-              >
-                ✦
-              </span>
-
-              <span
-                className="text-[8px] font-semibold uppercase tracking-[0.4em]"
-                style={{ color: COLORS.muted }}
-              >
-                A little note from the happy couple
-              </span>
-
-              <span
-                className="text-[9px] tracking-[0.3em]"
-                style={{ color: COLORS.lavender }}
-              >
-                ♡
-              </span>
-            </div>
-          </div>
 
           {/* =================================================
               CONTENT

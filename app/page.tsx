@@ -252,11 +252,7 @@ const handleSubmit = async (
           {/* HeroSection is intentionally empty */}
           {/*<HeroSection curtainsOpen={true} />*/}
 
-          
-
           <DetailsSection />
-
-          <SongRecommendationSection />
 
           <RsvpSection
             submitted={submitted}
@@ -265,6 +261,7 @@ const handleSubmit = async (
             setGuestCount={setGuestCount}
             onSubmit={handleSubmit}
           />
+          <SongRecommendationSection />
           <TransitionMessage />
 
           <footer className="py-20 text-center text-[10px] font-medium uppercase tracking-[0.5em] text-[#1A3A3A] opacity-40">

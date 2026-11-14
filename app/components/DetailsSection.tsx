@@ -40,12 +40,8 @@ export default function DetailsSection() {
         {/* Header */}
         <motion.div {...fadeIn} className="text-center mb-16">
 
-          <p className="text-[#8A7950] text-[10px] uppercase tracking-[0.45em] font-semibold mb-5">
-            A day to remember
-          </p>
-
           <h2 className="font-serif text-4xl md:text-6xl font-light text-[#354536]">
-            Join us for our day
+            Join us for our wedding day
           </h2>
 
           <div className="flex justify-center items-center gap-4 mt-7">
@@ -60,25 +56,8 @@ export default function DetailsSection() {
           {...fadeIn}
           className="flex flex-col items-center text-center mb-20"
         >
-          <div className="w-20 h-20 rounded-full bg-white border border-[#C4A46A]/30 shadow-sm flex items-center justify-center mb-6">
-            <CalendarDays
-              className="text-[#9A855A]"
-              size={29}
-              strokeWidth={1.2}
-            />
-          </div>
 
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#8A7950] font-semibold">
-            Save the date
-          </p>
-
-          <h3 className="font-serif text-3xl md:text-4xl text-[#354536] mt-4">
-            Saturday, February 6th, 2027
-          </h3>
-
-          <p className="text-stone-400 mt-3 font-light tracking-wide">
-            A beautiful beginning to our forever
-          </p>
+          
         </motion.div>
 
         {/* Event Cards */}
@@ -96,7 +75,7 @@ export default function DetailsSection() {
             </div>
 
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#8A7950] font-semibold">
-              The Ceremony
+              Ceremony
             </p>
 
             <h3 className="font-serif text-2xl md:text-3xl text-[#354536] mt-4">
@@ -121,8 +100,7 @@ export default function DetailsSection() {
             </a>
 
             <p className="text-stone-400 mt-3 font-light tracking-wide text-[15ev]">
-              حي النرجس (النرجس فيلات - بالقرب من بوابة 4 ومسجد فاطمة الشربتلي)، التجمع الخامس، القاهرة الجديدة
-
+             كنيسة العذراء و الأنبا بيشوي بالتجمع الخامس , حي النرجس
             </p>
 
           </motion.div>
@@ -139,11 +117,11 @@ export default function DetailsSection() {
             </div>
 
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#8A7950] font-semibold">
-              The Wedding Celebration
+              Reception
             </p>
 
             <h3 className="font-serif text-2xl md:text-3xl text-[#354536] mt-4">
-              La Novia Venue
+              La Novia
             </h3>
 
             <p className="text-sm text-stone-400 mt-4 font-light">
@@ -174,7 +152,7 @@ export default function DetailsSection() {
               Get Directions
             </a>
             <p className="text-stone-400 mt-3 font-light tracking-wide text-[15px]">
-              طريق القاهره السويس قبل، مباشره في اتجاه القاهره وبعد مدينه وصال، والدائري الاوسطي القاهره، كارته, El Shorouk, Cairo Governorate
+              طريق القاهرة السويس بعد بوابات مدينتي الشروق
               </p> 
 
           </motion.div>

@@ -163,11 +163,7 @@ export default function SongRecommendationSection() {
   return (
     <section
       id="song-recommendations"
-      className="relative overflow-hidden px-5 py-24 sm:px-8 sm:py-32"
-      style={{
-        background:
-          "linear-gradient(145deg, #F9F6F9 0%, #FDFBF7 50%, #F0F0E9 100%)",
-      }}
+      className="relative overflow-hidden px-5 py-24 sm:px-8 sm:py-32 bg-[#FDFBF7]"
     >
       {/* Decorative background details */}
       <div className="pointer-events-none absolute -left-24 top-10 h-64 w-64 rounded-full bg-[#A99ABB]/10 blur-3xl" />
@@ -182,12 +178,12 @@ export default function SongRecommendationSection() {
             </span>
           </div>
 
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.4em] text-[#7A8065]">
+          {/*<p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.4em] text-[#7A8065]">
             A Little Something From You
-          </p>
+          </p>*/}
 
           <h2 className="font-serif text-4xl text-[#403C3A] sm:text-5xl">
-           Help Us Choose the Music
+           Help Us Choose The Music
           </h2>
 
           <div className="mx-auto my-5 flex items-center justify-center gap-3">
@@ -208,7 +204,7 @@ export default function SongRecommendationSection() {
             htmlFor="song-search"
             className="mb-3 block text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7A8065]"
           >
-            Find Your Songs
+           Recommend A Song
           </label>
 
           <div className="relative">
