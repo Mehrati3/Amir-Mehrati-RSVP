@@ -120,6 +120,11 @@ export default function DetailsSection() {
               Get Directions
             </a>
 
+            <p className="text-stone-400 mt-3 font-light tracking-wide text-[15ev]">
+              حي النرجس (النرجس فيلات - بالقرب من بوابة 4 ومسجد فاطمة الشربتلي)، التجمع الخامس، القاهرة الجديدة
+
+            </p>
+
           </motion.div>
 
           {/* After Party */}
@@ -168,6 +173,9 @@ export default function DetailsSection() {
               <Navigation size={13} />
               Get Directions
             </a>
+            <p className="text-stone-400 mt-3 font-light tracking-wide text-[15px]">
+              طريق القاهره السويس قبل، مباشره في اتجاه القاهره وبعد مدينه وصال، والدائري الاوسطي القاهره، كارته, El Shorouk, Cairo Governorate
+              </p> 
 
           </motion.div>
         </div>

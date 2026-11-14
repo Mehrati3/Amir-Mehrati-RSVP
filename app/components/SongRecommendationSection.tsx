@@ -187,7 +187,7 @@ export default function SongRecommendationSection() {
           </p>
 
           <h2 className="font-serif text-4xl text-[#403C3A] sm:text-5xl">
-            Help Us Set the Mood
+           Help Us Choose the Music
           </h2>
 
           <div className="mx-auto my-5 flex items-center justify-center gap-3">
@@ -197,9 +197,7 @@ export default function SongRecommendationSection() {
           </div>
 
           <p className="mx-auto max-w-xl text-sm leading-7 text-[#77716D]">
-            Every unforgettable celebration needs a soundtrack.
-            Search for all the songs you'd love to hear on our
-            special day and add them to our wedding playlist.
+            We'd love to hear the songs you enjoy! Search for your favourite songs and add them to our wedding playlist so we can enjoy them together on our special day.
           </p>
         </div>
 
@@ -228,7 +226,7 @@ export default function SongRecommendationSection() {
                 setSuccess("");
                 setSubmitError("");
               }}
-              placeholder="Search by song title or artist..."
+              placeholder="Search by song title"
               className="w-full rounded-2xl border border-[#DED7DE] bg-[#FCFAFC] py-4 pl-12 pr-12 text-sm text-[#403C3A] outline-none transition placeholder:text-[#AAA2AA] focus:border-[#9A8EAA] focus:ring-2 focus:ring-[#9A8EAA]/10"
             />
 
