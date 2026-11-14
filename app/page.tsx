@@ -201,10 +201,10 @@ const handleSubmit = async (
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#FDFBF7] font-serif text-[#2A3B3B]">
       {/* THE ENVELOPE / REAL INVITATION */}
-      <RoyalEntrance view={view} />
+     
 
       {/* Navigation */}
-      <div className="fixed right-5 top-5 z-[90] flex gap-2 sm:right-6 sm:top-6">
+      <div className="relative z-[90] flex w-full flex-wrap justify-center gap-2 px-3 py-3 sm:fixed sm:right-6 sm:top-6 sm:w-auto sm:flex-nowrap sm:justify-end sm:px-0 sm:py-0">
         {/* Invitation */}
         <button
           onClick={() => setView("invite")}
@@ -245,6 +245,7 @@ const handleSubmit = async (
           </span>
         </button>
       </div>
+       <RoyalEntrance view={view} />
 
       {view === "invite" ? (
         <>
