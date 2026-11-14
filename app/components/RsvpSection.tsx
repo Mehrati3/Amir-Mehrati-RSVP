@@ -74,7 +74,7 @@ export default function RsvpSection({
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden px-4 py-20 text-[#403B3A] sm:px-6 md:py-28 lg:px-8"
+     className="relative min-h-screen overflow-hidden px-4 pt-20 pb-4 text-[#403B3A] sm:px-6 md:pt-28 md:pb-6 lg:px-8"
       style={{
         backgroundColor: COLORS.cream,
       }}
@@ -224,7 +224,7 @@ export default function RsvpSection({
         ==================================================== */}
 
         <div
-          className="relative overflow-hidden border shadow-[0_30px_90px_rgba(93,76,104,0.16)]"
+          className="relative overflow-hidden border"
           style={{
             backgroundColor: "rgba(252,248,241,0.97)",
             borderColor: `${COLORS.lavenderLight}80`,
@@ -427,7 +427,7 @@ export default function RsvpSection({
                         strokeWidth={1.2}
                       />
                       <span className="block font-serif text-lg" style={{ color: COLORS.text }}>
-                        Joyfully accepts
+                        yes 
                       </span>
                       <span className="mt-2 block text-[9px] uppercase tracking-widest" style={{ color: COLORS.olive }}>
                         We wouldn't miss it!
@@ -460,7 +460,7 @@ export default function RsvpSection({
                         strokeWidth={1.2}
                       />
                       <span className="block font-serif text-lg" style={{ color: COLORS.text }}>
-                        Regretfully declines
+                        No
                       </span>
                       <span className="mt-2 block text-[9px] uppercase tracking-widest" style={{ color: COLORS.lavenderDark }}>
                         Sending love from afar

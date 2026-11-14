@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
@@ -17,6 +17,8 @@ import {
   Sparkles,
   ChevronDown,
   FileText,
+  Music2,
+  Loader2,
 } from "lucide-react";
 
 interface AdminPanelProps {
@@ -25,7 +27,7 @@ interface AdminPanelProps {
   setPassword: (val: string) => void;
   showPassword: boolean;
   setShowPassword: (val: boolean) => void;
-  handleLogin: (e: React.FormEvent) => void;
+ handleLogin: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
 
   guests: any[];
 
@@ -70,7 +72,50 @@ export default function AdminPanel({
   handleUpdateGuest,
   handleDeleteGuest,
   fetchGuests,
+  
 }: AdminPanelProps) {
+  const [songRecommendations, setSongRecommendations] = useState<any[]>([]);
+  const [loadingSongs, setLoadingSongs] = useState(false);
+  const [songError, setSongError] = useState("");
+
+  
+  const fetchSongRecommendations = useCallback(async () => {
+    setLoadingSongs(true);
+    setSongError("");
+
+    try {
+      const response = await fetch("/api/admin/songs", {
+        cache: "no-store",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Unable to load recommendations"
+        );
+      }
+
+      setSongRecommendations(result.recommendations || []);
+    } catch (error) {
+      console.error("Error fetching song recommendations:", error);
+
+      setSongError(
+        error instanceof Error
+          ? error.message
+          : "Unable to load song recommendations."
+      );
+    } finally {
+      setLoadingSongs(false);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchSongRecommendations();
+    }
+  }, [isAuthenticated, fetchSongRecommendations]);
   /*
    * ------------------------------------------------------------
    * Derived statistics
@@ -137,19 +182,25 @@ export default function AdminPanel({
    * ------------------------------------------------------------
    */
 
+  
   const startEditing = (guest: any) => {
     setEditingId(guest.id);
     setEditError(null);
 
     setEditFormData({
       name: guest.name || "",
-      total_guests: guest.total_guests || 1,
+      total_guests:
+        guest.status === "Not Attending"
+          ? 0
+          : guest.total_guests || 1,
       additional_guests: Array.isArray(guest.additional_guests)
         ? [...guest.additional_guests]
         : [],
       notes: guest.notes || "",
+      side: guest.side || null,
     });
   };
+
 
   const cancelEditing = () => {
     setEditingId(null);
@@ -202,7 +253,22 @@ export default function AdminPanel({
     setEditError(null);
   };
 
+  
   const submitUpdate = (id: number) => {
+    const guest = guests.find((item) => item.id === id);
+
+    // Declined guests only need their name updated.
+    if (guest?.status === "Not Attending") {
+      if (!editFormData.name?.trim()) {
+        setEditError("Please enter the guest's name.");
+        return;
+      }
+
+      setEditError(null);
+      handleUpdateGuest(id);
+      return;
+    }
+
     const additionalGuests = Array.isArray(
       editFormData.additional_guests
     )
@@ -229,9 +295,9 @@ export default function AdminPanel({
     }
 
     setEditError(null);
-
     handleUpdateGuest(id);
   };
+
 
   /*
    * ------------------------------------------------------------
@@ -575,7 +641,10 @@ export default function AdminPanel({
 
             <motion.button
               type="button"
-              onClick={fetchGuests}
+              onClick={() => {
+                fetchGuests();
+                fetchSongRecommendations();
+              }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.97 }}
               className="inline-flex w-fit items-center gap-2 rounded-full border bg-white/50 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.2em] shadow-sm transition"
@@ -714,8 +783,26 @@ export default function AdminPanel({
           />
         </div>
         <div className="mt-8">
-        <DeclinedGuestsSection guests={declinedGuests} />
+        <DeclinedGuestsSection
+          guests={declinedGuests}
+          editingId={editingId}
+          editFormData={editFormData}
+          editError={editError}
+          onStartEditing={startEditing}
+          onCancelEditing={cancelEditing}
+          onSubmitEdit={submitUpdate}
+          onDelete={handleDeleteGuest}
+          setEditFormData={setEditFormData}
+        />
+        <div className="mt-8">
+          <SongRecommendationsSection
+            recommendations={songRecommendations}
+            loading={loadingSongs}
+            error={songError}
+          />
         </div>
+        </div>
+      
 
         {/* Footer */}
         <footer className="py-10 text-center">
@@ -1886,10 +1973,27 @@ function EmptyGuests({
 
 
 
+
 function DeclinedGuestsSection({
   guests,
+  editingId,
+  editFormData,
+  editError,
+  onStartEditing,
+  onCancelEditing,
+  onSubmitEdit,
+  onDelete,
+  setEditFormData,
 }: {
   guests: any[];
+  editingId: number | null;
+  editFormData: any;
+  editError: string | null;
+  onStartEditing: (guest: any) => void;
+  onCancelEditing: () => void;
+  onSubmitEdit: (id: number) => void;
+  onDelete: (id: number) => void;
+  setEditFormData: (data: any) => void;
 }) {
   return (
     <motion.section
@@ -1903,18 +2007,14 @@ function DeclinedGuestsSection({
       {/* Section header */}
       <div
         className="relative overflow-hidden px-5 py-5 sm:px-7"
-        style={{
-          backgroundColor: lavenderSoft,
-        }}
+        style={{ backgroundColor: lavenderSoft }}
       >
-        {/* Decorative circle */}
         <div
           className="absolute -right-10 -top-14 h-36 w-36 rounded-full opacity-50"
           style={{ backgroundColor: lavender }}
         />
 
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          {/* Title and Heart */}
           <div className="flex items-center gap-4">
             <div
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-white/60"
@@ -1934,7 +2034,6 @@ function DeclinedGuestsSection({
                 >
                   Regretfully Declined
                 </h2>
-
                 <span style={{ color: lavender }}>♡</span>
               </div>
 
@@ -1947,23 +2046,19 @@ function DeclinedGuestsSection({
             </div>
           </div>
 
-          {/* Total Count */}
-          <div className="flex items-center gap-3">
-            <div className="rounded-full border bg-white/70 px-4 py-2 text-center">
-              <span
-                className="font-serif text-lg"
-                style={{ color: lavender }}
-              >
-                {guests.length}
-              </span>
-
-              <span
-                className="ml-2 text-[9px] font-semibold uppercase tracking-[0.16em]"
-                style={{ color: muted }}
-              >
-                declined
-              </span>
-            </div>
+          <div className="rounded-full border bg-white/70 px-4 py-2 text-center">
+            <span
+              className="font-serif text-lg"
+              style={{ color: lavender }}
+            >
+              {guests.length}
+            </span>
+            <span
+              className="ml-2 text-[9px] font-semibold uppercase tracking-[0.16em]"
+              style={{ color: muted }}
+            >
+              declined
+            </span>
           </div>
         </div>
       </div>
@@ -1984,29 +2079,404 @@ function DeclinedGuestsSection({
           >
             <div className="divide-y divide-[#ECE7EB]">
               {guests.map((guest, index) => (
-                <div
+                <motion.div
                   key={guest.id}
-                  className="flex items-center gap-4 px-5 py-4 transition hover:bg-[#FAF7F9]"
+                  layout
+                  className="px-4 py-4 transition hover:bg-[#FAF7F9] sm:px-5"
                 >
-                  <span
-                    className="inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-                    style={{
-                      backgroundColor: `${lavender}18`,
-                      color: lavender,
-                    }}
-                  >
-                    {index + 1}
-                  </span>
+                  {editingId === guest.id ? (
+                    <div className="space-y-3">
+                      <div>
+                        <label
+                          className="mb-1.5 block text-[9px] font-semibold uppercase tracking-[0.18em]"
+                          style={{ color: muted }}
+                        >
+                          Guest Name
+                        </label>
 
-                  <p
-                    className="font-serif text-base"
-                    style={{ color: charcoal }}
-                  >
-                    {guest.name || "Unnamed guest"}
-                  </p>
-                </div>
+                        <input
+                          autoFocus
+                          value={editFormData?.name || ""}
+                          onChange={(e) => {
+                            setEditFormData({
+                              ...editFormData,
+                              name: e.target.value,
+                            });
+                          }}
+                          className="edit-input"
+                          style={{ borderColor: "#DCD4DD" }}
+                        />
+                      </div>
+
+                      {editError && (
+                        <EditError message={editError} />
+                      )}
+
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={onCancelEditing}
+                          className="rounded-xl border px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.15em]"
+                          style={{
+                            borderColor: "#DDD5DD",
+                            color: muted,
+                          }}
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onSubmitEdit(guest.id)}
+                          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white"
+                          style={{ backgroundColor: lavender }}
+                        >
+                          <Check size={14} />
+                          Save Changes
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="inline-flex h-8 min-w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+                        style={{
+                          backgroundColor: `${lavender}18`,
+                          color: lavender,
+                        }}
+                      >
+                        {index + 1}
+                      </span>
+
+                      <p
+                        className="min-w-0 flex-1 truncate font-serif text-base"
+                        style={{ color: charcoal }}
+                      >
+                        {guest.name || "Unnamed guest"}
+                      </p>
+
+                      <div className="flex shrink-0 items-center gap-1.5">
+                        <ActionButton
+                          label="Edit guest"
+                          onClick={() => onStartEditing(guest)}
+                          icon={<Pencil size={14} />}
+                          color={lavender}
+                        />
+
+                        <ActionButton
+                          label="Delete guest"
+                          onClick={() => onDelete(guest.id)}
+                          icon={<Trash2 size={14} />}
+                          danger
+                        />
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
               ))}
             </div>
+          </div>
+        )}
+      </div>
+    </motion.section>
+  );
+}
+
+
+function SongRecommendationsSection({
+  recommendations,
+  loading,
+  error,
+}: {
+  recommendations: any[];
+  loading: boolean;
+  error: string;
+}) {
+  const totalSongs = recommendations.length;
+
+  const uniqueGuests = new Set(
+    recommendations.map((song) => song.guest_name?.trim()).filter(Boolean)
+  ).size;
+
+  // Group songs by guest
+  const groupedSongs = recommendations.reduce(
+    (groups: Record<string, any[]>, song) => {
+      const guestName = song.guest_name?.trim() || "Unknown Guest";
+
+      if (!groups[guestName]) {
+        groups[guestName] = [];
+      }
+
+      groups[guestName].push(song);
+
+      return groups;
+    },
+    {}
+  );
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.6 }}
+      className="overflow-hidden rounded-[2rem] border bg-white/60 shadow-[0_20px_60px_rgba(64,60,58,0.08)]"
+      style={{ borderColor: "#DED7DE" }}
+    >
+      {/* Header */}
+      <div
+        className="relative overflow-hidden px-5 py-6 sm:px-7"
+        style={{ backgroundColor: oliveLight }}
+      >
+        <div
+          className="absolute -right-10 -top-14 h-36 w-36 rounded-full opacity-40"
+          style={{ backgroundColor: olive }}
+        />
+
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-white/60"
+              style={{
+                borderColor: `${olive}55`,
+                color: olive,
+              }}
+            >
+              <Music2 size={21} />
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2">
+                <h2
+                  className="font-serif text-2xl sm:text-3xl"
+                  style={{ color: charcoal }}
+                >
+                  Wedding Playlist
+                </h2>
+
+                <span style={{ color: olive }}>♡</span>
+              </div>
+
+              <p
+                className="mt-1 text-xs"
+                style={{ color: muted }}
+              >
+                Songs chosen by your family and friends
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <div className="rounded-full border bg-white/70 px-4 py-2 text-center">
+              <span
+                className="font-serif text-lg"
+                style={{ color: olive }}
+              >
+                {totalSongs}
+              </span>
+
+              <span
+                className="ml-2 text-[9px] font-semibold uppercase tracking-[0.15em]"
+                style={{ color: muted }}
+              >
+                Songs
+              </span>
+            </div>
+
+            <div className="rounded-full border bg-white/70 px-4 py-2 text-center">
+              <span
+                className="font-serif text-lg"
+                style={{ color: lavender }}
+              >
+                {uniqueGuests}
+              </span>
+
+              <span
+                className="ml-2 text-[9px] font-semibold uppercase tracking-[0.15em]"
+                style={{ color: muted }}
+              >
+                Guests
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-4 sm:p-6">
+
+        {loading ? (
+          <div className="flex flex-col items-center py-12">
+            <Loader2
+              size={28}
+              className="animate-spin"
+              style={{ color: lavender }}
+            />
+
+            <p
+              className="mt-3 text-sm"
+              style={{ color: muted }}
+            >
+              Loading wedding playlist...
+            </p>
+          </div>
+        ) : error ? (
+          <p className="py-8 text-center text-sm text-red-600">
+            {error}
+          </p>
+        ) : recommendations.length === 0 ? (
+          <div className="flex flex-col items-center py-12 text-center">
+            <Music2
+              size={30}
+              style={{ color: lavender }}
+            />
+
+            <h3
+              className="mt-4 font-serif text-xl"
+              style={{ color: charcoal }}
+            >
+              No songs yet
+            </h3>
+
+            <p
+              className="mt-2 text-xs"
+              style={{ color: muted }}
+            >
+              Your guests' song recommendations will appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {Object.entries(groupedSongs).map(
+              ([guestName, songs]) => (
+                <div
+                  key={guestName}
+                  className="overflow-hidden rounded-2xl border bg-white/60"
+                  style={{ borderColor: "#E2DCE1" }}
+                >
+                  {/* Guest heading */}
+                  <div
+                    className="flex items-center justify-between gap-3 border-b px-4 py-3 sm:px-5"
+                    style={{
+                      backgroundColor: "#F8F5F8",
+                      borderColor: "#E9E2E9",
+                    }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-9 w-9 items-center justify-center rounded-full"
+                        style={{
+                          backgroundColor: lavenderSoft,
+                          color: lavender,
+                        }}
+                      >
+                        <UserRound size={17} />
+                      </div>
+
+                      <div>
+                        <h3
+                          className="font-serif text-base"
+                          style={{ color: charcoal }}
+                        >
+                          {guestName}
+                        </h3>
+
+                        <p
+                          className="text-[9px] uppercase tracking-[0.15em]"
+                          style={{ color: muted }}
+                        >
+                          Guest Recommendation
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className="rounded-full px-3 py-1 text-[10px] font-semibold"
+                      style={{
+                        backgroundColor: oliveLight,
+                        color: olive,
+                      }}
+                    >
+                      {songs.length} {songs.length === 1 ? "Song" : "Songs"}
+                    </span>
+                  </div>
+
+                  {/* Songs */}
+                  <div className="divide-y divide-[#ECE7EB]">
+                    {songs.map((song, index) => (
+                      <div
+                        key={song.id ?? `${song.track_id}-${index}`}
+                        className="flex items-center gap-3 px-4 py-3 transition hover:bg-[#FAF7F9] sm:px-5"
+                      >
+                        <span
+                          className="w-5 shrink-0 text-center text-xs font-semibold"
+                          style={{ color: lavender }}
+                        >
+                          {index + 1}
+                        </span>
+
+                        {song.artwork_url ? (
+                          <img
+                            src={song.artwork_url}
+                            alt=""
+                            className="h-12 w-12 shrink-0 rounded-xl object-cover shadow-sm"
+                          />
+                        ) : (
+                          <div
+                            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                            style={{
+                              backgroundColor: lavenderSoft,
+                              color: lavender,
+                            }}
+                          >
+                            <Music2 size={20} />
+                          </div>
+                        )}
+
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className="truncate font-serif text-sm sm:text-base"
+                            style={{ color: charcoal }}
+                          >
+                            {song.track_name}
+                          </p>
+
+                          <p
+                            className="mt-0.5 truncate text-xs"
+                            style={{ color: muted }}
+                          >
+                            {song.artist_name}
+                          </p>
+
+                          {song.album_name && (
+                            <p
+                              className="mt-0.5 truncate text-[10px]"
+                              style={{ color: "#A49B96" }}
+                            >
+                              {song.album_name}
+                            </p>
+                          )}
+                        </div>
+
+                        {song.track_url && (
+                          <a
+                            href={song.track_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Listen to ${song.track_name}`}
+                            title="Listen to song"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition hover:bg-[#EEE8F2]"
+                            style={{ color: lavender }}
+                          >
+                            <Music2 size={17} />
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            )}
           </div>
         )}
       </div>

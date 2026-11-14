@@ -107,7 +107,7 @@ export default function DetailsSection() {
 
             <div className="flex justify-center items-center gap-2 mt-6 text-stone-500">
               <Clock size={15} className="text-[#A18C62]" />
-              <p className="text-sm tracking-wide">6:00 PM</p>
+              <p className="text-xl tracking-wide">6:00 PM</p>
             </div>
 
             <a
@@ -134,7 +134,7 @@ export default function DetailsSection() {
             </div>
 
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#8A7950] font-semibold">
-              The After Party
+              The Wedding Celebration
             </p>
 
             <h3 className="font-serif text-2xl md:text-3xl text-[#354536] mt-4">
@@ -147,7 +147,7 @@ export default function DetailsSection() {
 
             <div className="flex justify-center items-center gap-2 mt-5 text-stone-500">
               <Clock size={15} className="text-[#A18C62]" />
-              <p className="text-sm tracking-wide">
+              <p className="text-xl tracking-wide">
                 8:00 PM
               </p>
             </div>
@@ -172,26 +172,7 @@ export default function DetailsSection() {
           </motion.div>
         </div>
 
-        {/* Transition Message */}
-        <motion.div
-          {...fadeIn}
-          className="text-center mt-20 max-w-2xl mx-auto"
-        >
-          <Sparkles
-            className="mx-auto text-[#B6A078] mb-5"
-            size={22}
-            strokeWidth={1.2}
-          />
-
-          <p className="font-serif italic text-xl md:text-2xl text-[#657454] leading-relaxed">
-            From a blessed beginning to a night
-            filled with love, laughter and dancing...
-          </p>
-
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#A18C62] mt-6">
-            We can't wait to celebrate with you
-          </p>
-        </motion.div>
+        
 
       </div>
     </section>

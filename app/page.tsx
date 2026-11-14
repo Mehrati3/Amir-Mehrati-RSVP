@@ -9,6 +9,8 @@ import GallerySection from "./components/GallerySection";
 import DetailsSection from "./components/DetailsSection";
 import RsvpSection from "./components/RsvpSection";
 import AdminPanel from "./components/AdminPanel";
+import TransitionMessage from "./components/TransitionMessage";
+import SongRecommendationSection from "./components/SongRecommendationSection";
 
 export default function WeddingInvitation() {
   const [view, setView] = useState<"invite" | "admin">("invite");
@@ -82,55 +84,117 @@ const handleSubmit = async (
 
 
   const fetchGuests = async () => {
-    const { data } = await supabase
-      .from("rsvps")
-      .select("*")
-      .order("created_at", {
-        ascending: false,
+    try {
+      const response = await fetch("/api/admin/rsvps", {
+        method: "GET",
+        cache: "no-store",
       });
 
-    setGuests(data || []);
-  };
+      const result = await response.json();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to load guests");
+      }
 
-    if (password === "2027") {
-      setIsAuthenticated(true);
-      fetchGuests();
-    } else {
-      alert("Incorrect password");
+      setGuests(result.guests || []);
+    } catch (error) {
+      console.error("Error fetching guests:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to load guests."
+      );
     }
   };
 
-  const handleUpdateGuest = async (id: number) => {
-    const { error } = await supabase
-      .from("rsvps")
-      .update({
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.error || "Incorrect password");
+        return;
+      }
+
+      setIsAuthenticated(true);
+      await fetchGuests();
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Unable to log in. Please try again.");
+    }
+  };
+
+ const handleUpdateGuest = async (id: number) => {
+  try {
+    const response = await fetch("/api/admin/rsvps", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
         name: editFormData.name,
         total_guests: editFormData.total_guests,
         notes: editFormData.notes,
         additional_guests: editFormData.additional_guests,
         side: editFormData.side,
-      })
-      .eq("id", id);
+      }),
+    });
 
-    if (!error) {
+    const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to update guest");
+      }
+
       setEditingId(null);
-      fetchGuests();
+      await fetchGuests();
+    } catch (error) {
+      console.error("Error updating guest:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to update guest."
+      );
     }
   };
 
   const handleDeleteGuest = async (id: number) => {
     if (!confirm("Are you sure?")) return;
 
-    const { error } = await supabase
-      .from("rsvps")
-      .delete()
-      .eq("id", id);
+    try {
+      const response = await fetch("/api/admin/rsvps", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
 
-    if (!error) {
-      fetchGuests();
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to delete guest");
+      }
+
+      await fetchGuests();
+    } catch (error) {
+      console.error("Error deleting guest:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to delete guest."
+      );
     }
   };
 
@@ -189,7 +253,9 @@ const handleSubmit = async (
 
           
 
-          /<DetailsSection />
+          <DetailsSection />
+
+          <SongRecommendationSection />
 
           <RsvpSection
             submitted={submitted}
@@ -198,6 +264,7 @@ const handleSubmit = async (
             setGuestCount={setGuestCount}
             onSubmit={handleSubmit}
           />
+          <TransitionMessage />
 
           <footer className="py-20 text-center text-[10px] font-medium uppercase tracking-[0.5em] text-[#1A3A3A] opacity-40">
             Amir & Méhrati • February 6, 2027
