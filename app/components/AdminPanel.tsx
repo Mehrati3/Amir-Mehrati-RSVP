@@ -116,6 +116,51 @@ export default function AdminPanel({
       fetchSongRecommendations();
     }
   }, [isAuthenticated, fetchSongRecommendations]);
+
+  const handleDeleteSong = async (id: number) => {
+    const song = songRecommendations.find(
+      (item) => String(item.id) === String(id)
+    );
+
+    const confirmed = window.confirm(
+      `Are you sure you want to remove "${song?.track_name || "this song"}" from the wedding playlist?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch("/api/admin/songs", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Unable to delete song.");
+      }
+
+      // Remove the deleted recommendation from the screen
+      setSongRecommendations((current) =>
+        current.filter(
+          (item) => String(item.id) !== String(id)
+        )
+      );
+
+    } catch (error) {
+      console.error("Error deleting song:", error);
+
+      window.alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to delete this song."
+      );
+    }
+  };
+
   /*
    * ------------------------------------------------------------
    * Derived statistics
@@ -799,6 +844,7 @@ export default function AdminPanel({
             recommendations={songRecommendations}
             loading={loadingSongs}
             error={songError}
+            onDelete={handleDeleteSong}
           />
         </div>
         </div>
@@ -2187,10 +2233,12 @@ function SongRecommendationsSection({
   recommendations,
   loading,
   error,
+  onDelete,
 }: {
   recommendations: any[];
   loading: boolean;
   error: string;
+  onDelete: (id: number) => void;
 }) {
   const totalSongs = recommendations.length;
 
@@ -2458,6 +2506,7 @@ function SongRecommendationsSection({
                           )}
                         </div>
 
+                        <div className="flex shrink-0 items-center gap-1">
                         {song.track_url && (
                           <a
                             href={song.track_url}
@@ -2465,12 +2514,26 @@ function SongRecommendationsSection({
                             rel="noopener noreferrer"
                             aria-label={`Listen to ${song.track_name}`}
                             title="Listen to song"
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition hover:bg-[#EEE8F2]"
+                            className="flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-[#EEE8F2]"
                             style={{ color: lavender }}
                           >
                             <Music2 size={17} />
                           </a>
                         )}
+
+                        {song.id != null && (
+                          <button
+                            type="button"
+                            onClick={() => onDelete(song.id)}
+                            aria-label={`Delete ${song.track_name}`}
+                            title="Delete song"
+                            className="flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-red-50"
+                            style={{ color: "#B76E79" }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
                       </div>
                     ))}
                   </div>
