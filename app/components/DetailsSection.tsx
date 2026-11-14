@@ -29,8 +29,7 @@ export default function DetailsSection() {
   };
 
   return (
-    <section className="relative py-28 px-6 bg-[#FDFBF7] overflow-hidden">
-
+    <section className="relative pt-8 pb-16 md:pt-10 md:pb-20 px-6 bg-[#FDFBF7] overflow-hidden">
       {/* Soft lavender and olive decorations */}
       <div className="absolute -left-40 top-20 w-96 h-48 bg-[#E9E2EF] blur-3xl opacity-40 rounded-full" />
       <div className="absolute -right-40 bottom-20 w-96 h-48 bg-[#E6E9DB] blur-3xl opacity-50 rounded-full" />
@@ -38,13 +37,13 @@ export default function DetailsSection() {
       <div className="relative max-w-6xl mx-auto">
 
         {/* Header */}
-        <motion.div {...fadeIn} className="text-center mb-16">
+        <motion.div {...fadeIn} className="text-center mb-0">
 
           <h2 className="font-serif text-4xl md:text-6xl font-light text-[#354536]">
             Join us for our wedding day
           </h2>
 
-          <div className="flex justify-center items-center gap-4 mt-7">
+          <div className="flex justify-center items-center mt-1">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#C4A46A]" />
             <span className="text-[#C4A46A]">✦</span>
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#C4A46A]" />
@@ -61,7 +60,7 @@ export default function DetailsSection() {
         </motion.div>
 
         {/* Event Cards */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 -mt-12">
 
           {/* Ceremony */}
           <motion.div

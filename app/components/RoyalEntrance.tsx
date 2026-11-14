@@ -83,7 +83,7 @@ export default function RoyalEntrance({
         ====================================================== */}
 
         <Image
-          src="/isa.png"
+          src="/lastt.png"
           alt="Amir and Méhrati wedding invitation"
           width={854}
           height={2048}
